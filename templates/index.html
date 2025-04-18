@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .qr-container {
+            transition: all 0.3s ease;
+        }
+        .qr-container:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8 text-gray-800">QR Code Generator</h1>
+        
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+            <form id="qrForm" class="space-y-4">
+                <div>
+                    <label for="url" class="block text-sm font-medium text-gray-700">URL</label>
+                    <input type="url" id="url" name="url" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+
+                <div>
+                    <label for="color" class="block text-sm font-medium text-gray-700">QR Code Color</label>
+                    <input type="color" id="color" name="color" value="#000000"
+                        class="mt-1 block w-full h-10 rounded-md border-gray-300 shadow-sm">
+                </div>
+
+                <div>
+                    <label for="style" class="block text-sm font-medium text-gray-700">Style</label>
+                    <select id="style" name="style"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="standard">Standard</option>
+                        <option value="rounded">Rounded</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="expiry" class="block text-sm font-medium text-gray-700">Expiry Time (minutes)</label>
+                    <input type="number" id="expiry" name="expiry" min="1"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        placeholder="Leave empty for indefinite">
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    Generate QR Code
+                </button>
+            </form>
+
+            <div id="result" class="mt-8 hidden">
+                <div class="text-center">
+                    <div class="qr-container inline-block p-4 bg-white rounded-lg shadow">
+                        <img id="qrImage" src="" alt="Generated QR Code" class="max-w-xs">
+                    </div>
+                    <div class="mt-4">
+                        <a id="downloadBtn" href="#" download
+                            class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">
+                            Download QR Code
+                        </a>
+                    </div>
+                    <div id="expiryInfo" class="mt-2 text-sm text-gray-600"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('qrForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                url: document.getElementById('url').value,
+                color: document.getElementById('color').value,
+                style: document.getElementById('style').value,
+                expiry: document.getElementById('expiry').value || null
+            };
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const qrImage = document.getElementById('qrImage');
+                    const downloadBtn = document.getElementById('downloadBtn');
+                    const resultDiv = document.getElementById('result');
+                    const expiryInfo = document.getElementById('expiryInfo');
+
+                    qrImage.src = data.qr_code;
+                    downloadBtn.href = data.qr_code;
+                    resultDiv.classList.remove('hidden');
+
+                    if (data.expires_at) {
+                        const expiryDate = new Date(data.expires_at);
+                        expiryInfo.textContent = `QR Code expires at: ${expiryDate.toLocaleString()}`;
+                    } else {
+                        expiryInfo.textContent = 'QR Code will not expire';
+                    }
+                } else {
+                    alert(data.error || 'An error occurred');
+                }
+            } catch (error) {
+                alert('An error occurred while generating the QR code');
+            }
+        });
+    </script>
+</body>
+</html> 
