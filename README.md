@@ -1,60 +1,38 @@
 # QR Code Generator
 
-A modern web application for generating customizable QR codes with expiration options.
+A modern web application for generating customizable QR codes, hosted on GitHub Pages.
 
 ## Features
 
-- Generate QR codes from URLs
-- Customize QR code colors
+- Generate QR codes from URLs or text
+- Customize QR code colors and background colors
 - Choose between different styles (standard, rounded)
-- Set expiration time for QR codes
+- Adjust QR code size
 - Download generated QR codes
 - Modern, responsive UI
+- Works entirely in the browser - no server required
 
-## Setup
+## Live Demo
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/qr-code-generator.git
-cd qr-code-generator
-```
-
-2. Create a virtual environment and activate it:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows, use: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-4. Run the application:
-```bash
-python app.py
-```
-
-The application will be available at `http://localhost:5000`
-
-## Deployment
-
-This application can be deployed to Heroku:
-
-1. Create a new Heroku app
-2. Push the code to Heroku:
-```bash
-git push heroku main
-```
+Visit the live demo at: [https://eekruse2.github.io/QR/](https://eekruse2.github.io/QR/)
 
 ## Usage
 
-1. Enter the URL you want to encode in the QR code
+1. Enter the URL or text you want to encode in the QR code
 2. Choose a color for the QR code
-3. Select a style (standard or rounded)
-4. Optionally set an expiration time in minutes
-5. Click "Generate QR Code"
-6. Download the generated QR code
+3. Select a background color
+4. Choose a style (standard or rounded)
+5. Adjust the size using the slider
+6. Click "Generate QR Code"
+7. Download the generated QR code
+
+## Development
+
+The application is built using:
+- HTML5
+- CSS3 (with Tailwind CSS)
+- JavaScript
+- QRCode.js library
 
 ## License
 
