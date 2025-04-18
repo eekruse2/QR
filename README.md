@@ -1,39 +1,56 @@
-# QR Code Generator
+# Endless Flowers of Love
 
-A modern web application for generating customizable QR codes, hosted on GitHub Pages.
+A beautiful website created to express love through daily flowers, quotes, and messages.
 
 ## Features
 
-- Generate QR codes from URLs or text
-- Customize QR code colors and background colors
-- Choose between different styles (standard, rounded)
-- Adjust QR code size
-- Download generated QR codes
-- Modern, responsive UI
-- Works entirely in the browser - no server required
+- **Daily Flowers**: Discover a new beautiful flower each day (80% chance) or a magical moonlit scene (20% chance)
+- **Love Quotes**: Thoughtful quotes about love and persistence
+- **Archive**: Save your favorite flowers and quotes
+- **Contact Form**: Share your thoughts and feelings
+- **Modern Design**: Clean, minimalist interface with a touch of elegance
 
-## Live Demo
+## How to Use
 
-Visit the live demo at: [https://eekruse2.github.io/QR/](https://eekruse2.github.io/QR/)
+1. **Home Page**
+   - Visit daily to see a new flower/quote combination
+   - Click "Save to Archive" to save your favorites
 
-## Usage
+2. **Archive Page**
+   - View all your saved flowers and quotes
+   - Delete items you no longer want to keep
+   - Items are stored in your browser's local storage
 
-1. Enter the URL or text you want to encode in the QR code
-2. Choose a color for the QR code
-3. Select a background color
-4. Choose a style (standard or rounded)
-5. Adjust the size using the slider
-6. Click "Generate QR Code"
-7. Download the generated QR code
+3. **Contact Page**
+   - Write messages from your heart
+   - Name and email are optional
+   - View your message history
+   - Delete messages if needed
 
-## Development
+4. **Trial Page**
+   - Explore a more detailed design
+   - See additional features and animations
 
-The application is built using:
-- HTML5
-- CSS3 (with Tailwind CSS)
-- JavaScript
-- QRCode.js library
+## Technical Details
 
-## License
+- Built with HTML, CSS, and JavaScript
+- Uses Tailwind CSS for styling
+- Responsive design that works on all devices
+- Data is stored locally in the browser
 
-MIT License
+## Setup
+
+1. Clone this repository
+2. Open `index.html` in your web browser
+3. No server required - it's a static website!
+
+## Customization
+
+You can customize the website by:
+- Adding more flower images to the `images` folder
+- Modifying the quotes in `script.js`
+- Adjusting colors in `styles.css`
+
+## Note
+
+This website uses browser's local storage to save data. Clearing browser data will remove saved items.

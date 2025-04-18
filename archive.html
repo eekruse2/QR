@@ -5,68 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Archive - Endless Flowers of Love</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #fff5f5;
-            font-family: 'Georgia', serif;
-        }
-        .nav-link {
-            color: #9f7aea;
-            transition: color 0.3s ease;
-        }
-        .nav-link:hover {
-            color: #6b46c1;
-        }
-        .archive-item {
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-        .archive-item:hover {
-            transform: translateY(-2px);
-        }
-        .delete-btn {
-            color: #ef4444;
-            transition: color 0.3s ease;
-        }
-        .delete-btn:hover {
-            color: #dc2626;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="bg-pink-50 min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg py-4">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-center space-x-8">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="archive.html" class="nav-link">Archive</a>
-                <a href="contact.html" class="nav-link">Contact</a>
-                <a href="trial.html" class="nav-link">Trial</a>
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div class="flex items-center py-4">
+                        <a href="index.html" class="text-2xl font-semibold text-pink-600">Endless Flowers</a>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-1">
+                        <a href="index.html" class="py-4 px-2 text-gray-500 hover:text-pink-600 transition duration-300">Home</a>
+                        <a href="archive.html" class="py-4 px-2 text-pink-600 border-b-4 border-pink-600">Archive</a>
+                        <a href="contact.html" class="py-4 px-2 text-gray-500 hover:text-pink-600 transition duration-300">Contact</a>
+                        <a href="trial.html" class="py-4 px-2 text-gray-500 hover:text-pink-600 transition duration-300">Trial</a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">Your Archive</h1>
-        
-        <div id="archive-container" class="max-w-4xl mx-auto">
-            <!-- Archive items will be loaded here -->
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-3xl font-bold text-center mb-8 text-pink-600">Your Archive</h1>
+            
+            <!-- Archive Items -->
+            <div id="archiveContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Items will be loaded here by JavaScript -->
+            </div>
         </div>
     </main>
 
     <script>
-        function displayArchive() {
-            const archiveContainer = document.getElementById('archive-container');
+        document.addEventListener('DOMContentLoaded', function() {
+            const archiveContainer = document.getElementById('archiveContainer');
             const archive = JSON.parse(localStorage.getItem('archive') || '[]');
-            
+
             if (archive.length === 0) {
                 archiveContainer.innerHTML = `
-                    <div class="text-center text-gray-600">
+                    <div class="col-span-full text-center text-gray-500">
                         <p class="text-xl">Your archive is empty</p>
                         <p class="mt-2">Save some flowers and quotes from the home page to see them here!</p>
                     </div>
@@ -74,33 +54,31 @@
                 return;
             }
 
-            archiveContainer.innerHTML = archive.map((item, index) => `
-                <div class="archive-item">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <img src="${item.image}" alt="Archived image" class="rounded-lg shadow-lg w-full max-w-md mb-4">
-                            <p class="text-xl text-gray-800 italic mb-2">"${item.quote}"</p>
-                            <p class="text-sm text-gray-500">Saved on ${new Date(item.date).toLocaleDateString()}</p>
-                        </div>
-                        <button onclick="deleteItem(${index})" class="delete-btn ml-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
+            // Display archive items in reverse chronological order
+            archive.reverse().forEach((item, index) => {
+                const archiveItem = document.createElement('div');
+                archiveItem.className = 'archive-item bg-white rounded-lg shadow-lg p-6';
+                archiveItem.innerHTML = `
+                    <div class="relative">
+                        <img src="${item.image}" alt="Archived Image" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <button onclick="deleteItem(${archive.length - 1 - index})" 
+                                class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-sm">
+                            Delete
                         </button>
                     </div>
-                </div>
-            `).join('');
-        }
+                    <p class="quote-text text-center mb-2">${item.quote}</p>
+                    <p class="text-sm text-gray-500 text-center">${item.date}</p>
+                `;
+                archiveContainer.appendChild(archiveItem);
+            });
+        });
 
         function deleteItem(index) {
-            const archive = JSON.parse(localStorage.getItem('archive') || '[]');
+            let archive = JSON.parse(localStorage.getItem('archive') || '[]');
             archive.splice(index, 1);
             localStorage.setItem('archive', JSON.stringify(archive));
-            displayArchive();
+            location.reload(); // Refresh the page to show updated archive
         }
-
-        // Display archive when page loads
-        displayArchive();
     </script>
 </body>
 </html> 

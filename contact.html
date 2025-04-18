@@ -5,46 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - Endless Flowers of Love</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #fff5f5;
-            font-family: 'Georgia', serif;
-        }
-        .nav-link {
-            color: #9f7aea;
-            transition: color 0.3s ease;
-        }
-        .nav-link:hover {
-            color: #6b46c1;
-        }
-        .form-container {
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .form-input {
-            border: 1px solid #e2e8f0;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            width: 100%;
-            transition: border-color 0.3s ease;
-        }
-        .form-input:focus {
-            border-color: #9f7aea;
-            outline: none;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="bg-pink-50 min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg py-4">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-center space-x-8">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="archive.html" class="nav-link">Archive</a>
-                <a href="contact.html" class="nav-link">Contact</a>
-                <a href="trial.html" class="nav-link">Trial</a>
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div class="flex items-center py-4">
+                        <a href="index.html" class="text-2xl font-semibold text-pink-600">Endless Flowers</a>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-1">
+                        <a href="index.html" class="py-4 px-2 text-gray-500 hover:text-pink-600 transition duration-300">Home</a>
+                        <a href="archive.html" class="py-4 px-2 text-gray-500 hover:text-pink-600 transition duration-300">Archive</a>
+                        <a href="contact.html" class="py-4 px-2 text-pink-600 border-b-4 border-pink-600">Contact</a>
+                        <a href="trial.html" class="py-4 px-2 text-gray-500 hover:text-pink-600 transition duration-300">Trial</a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -52,77 +30,126 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
         <div class="max-w-2xl mx-auto">
-            <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">Write What's on Your Heart and Mind... <3</h1>
+            <h1 class="text-3xl font-bold text-center mb-8 text-pink-600">Write What's on Your Heart</h1>
             
-            <div class="form-container">
-                <form id="contactForm" class="space-y-6">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <form id="contactForm" class="space-y-4">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700">Name (optional)</label>
-                        <input type="text" id="name" name="name" class="form-input mt-1">
+                        <input type="text" id="name" name="name"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
                     </div>
-                    
+
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">Email (optional)</label>
-                        <input type="email" id="email" name="email" class="form-input mt-1">
+                        <input type="email" id="email" name="email"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
                     </div>
-                    
+
                     <div>
                         <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
-                        <textarea id="message" name="message" rows="6" required class="form-input mt-1"></textarea>
+                        <textarea id="message" name="message" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500 contact-form"
+                            placeholder="Write what's on your heart and mind... ❤️"></textarea>
                     </div>
-                    
-                    <div>
-                        <label for="currentImage" class="block text-sm font-medium text-gray-700">Attach Current Image (optional)</label>
-                        <input type="checkbox" id="currentImage" name="currentImage" class="mt-1">
+
+                    <div class="text-center">
+                        <button type="submit"
+                            class="bg-pink-500 text-white px-6 py-2 rounded-lg hover:bg-pink-600 transition duration-300">
+                            Send Message
+                        </button>
                     </div>
-                    
-                    <button type="submit" class="w-full bg-purple-500 text-white py-2 px-4 rounded-lg hover:bg-purple-600 transition-colors">
-                        Send Message
-                    </button>
                 </form>
+            </div>
+
+            <!-- Messages Archive -->
+            <div class="mt-8">
+                <h2 class="text-2xl font-bold text-center mb-4 text-pink-600">Your Messages</h2>
+                <div id="messagesContainer" class="space-y-4">
+                    <!-- Messages will be loaded here by JavaScript -->
+                </div>
             </div>
         </div>
     </main>
 
     <script>
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-            const attachImage = document.getElementById('currentImage').checked;
-            
-            // Get current image if needed
-            let currentImage = null;
-            if (attachImage) {
-                const homePageImage = localStorage.getItem('currentImage');
-                if (homePageImage) {
-                    currentImage = homePageImage;
-                }
-            }
-            
-            // Get existing messages or create new array
-            let messages = JSON.parse(localStorage.getItem('messages') || '[]');
-            
-            // Add new message
-            messages.push({
-                name: name || 'Anonymous',
-                email: email || '',
-                message: message,
-                image: currentImage,
-                date: new Date().toISOString()
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactForm = document.getElementById('contactForm');
+            const messagesContainer = document.getElementById('messagesContainer');
+
+            // Load existing messages
+            loadMessages();
+
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const message = document.getElementById('message').value;
+                const date = new Date().toISOString().split('T')[0];
+
+                // Save message
+                let messages = JSON.parse(localStorage.getItem('messages') || '[]');
+                messages.push({
+                    name: name,
+                    email: email,
+                    message: message,
+                    date: date
+                });
+                localStorage.setItem('messages', JSON.stringify(messages));
+
+                // Clear form
+                contactForm.reset();
+
+                // Reload messages
+                loadMessages();
+
+                // Show success message
+                alert('Message sent! ❤️');
             });
-            
-            // Save to localStorage
-            localStorage.setItem('messages', JSON.stringify(messages));
-            
-            // Clear form
-            this.reset();
-            
-            // Show success message
-            alert('Message sent! It will appear in the archive.');
+
+            function loadMessages() {
+                const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+                messagesContainer.innerHTML = '';
+
+                if (messages.length === 0) {
+                    messagesContainer.innerHTML = `
+                        <p class="text-center text-gray-500">No messages yet</p>
+                    `;
+                    return;
+                }
+
+                // Display messages in reverse chronological order
+                messages.reverse().forEach((msg, index) => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'bg-white rounded-lg shadow-lg p-6';
+                    messageDiv.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                ${msg.name ? `<p class="font-semibold">${msg.name}</p>` : ''}
+                                ${msg.email ? `<p class="text-sm text-gray-500">${msg.email}</p>` : ''}
+                            </div>
+                            <div class="flex space-x-2">
+                                <p class="text-sm text-gray-500">${msg.date}</p>
+                                <button onclick="deleteMessage(${messages.length - 1 - index})" 
+                                        class="text-red-500 hover:text-red-700">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">${msg.message}</p>
+                    `;
+                    messagesContainer.appendChild(messageDiv);
+                });
+            }
         });
+
+        function deleteMessage(index) {
+            let messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            messages.splice(index, 1);
+            localStorage.setItem('messages', JSON.stringify(messages));
+            location.reload(); // Refresh the page to show updated messages
+        }
     </script>
 </body>
 </html> 
