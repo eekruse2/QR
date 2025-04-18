@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Generator</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <style>
         .qr-container {
-            transition: all 0.3s ease;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -87,12 +86,6 @@
     </div>
 
     <script>
-        // Check if QRCode library is loaded
-        if (typeof QRCode === 'undefined') {
-            document.getElementById('error').textContent = 'Error: QRCode library failed to load. Please refresh the page.';
-            document.getElementById('error').classList.remove('hidden');
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
             const sizeInput = document.getElementById('size');
             const sizeValue = document.getElementById('sizeValue');
@@ -125,15 +118,20 @@
                     qrcodeDiv.innerHTML = '';
                     errorDiv.classList.add('hidden');
                     
-                    // Generate new QR code
-                    new QRCode(qrcodeDiv, {
-                        text: url,
-                        width: size,
-                        height: size,
-                        colorDark: color,
-                        colorLight: bgColor,
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
+                    // Generate QR code
+                    const qr = qrcode(0, 'M');
+                    qr.addData(url);
+                    qr.make();
+                    
+                    // Create image element
+                    const img = document.createElement('img');
+                    img.src = qr.createDataURL(10, 0);
+                    img.style.width = size + 'px';
+                    img.style.height = size + 'px';
+                    img.style.backgroundColor = bgColor;
+                    
+                    // Add image to container
+                    qrcodeDiv.appendChild(img);
 
                     // Show result
                     document.getElementById('result').classList.remove('hidden');
