@@ -5,16 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Generator</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         .qr-container {
             transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
         }
-        .qr-container:hover {
-            transform: scale(1.05);
+        #qrcode {
+            padding: 10px;
         }
-        #qrCanvas {
-            border-radius: 8px;
+        #qrcode img {
+            margin: 0 auto;
+            display: block;
+        }
+        .error-message {
+            color: red;
+            margin-top: 1rem;
+            text-align: center;
         }
     </style>
 </head>
@@ -44,15 +57,6 @@
                 </div>
 
                 <div>
-                    <label for="style" class="block text-sm font-medium text-gray-700">Style</label>
-                    <select id="style" name="style"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="standard">Standard</option>
-                        <option value="rounded">Rounded</option>
-                    </select>
-                </div>
-
-                <div>
                     <label for="size" class="block text-sm font-medium text-gray-700">Size</label>
                     <input type="range" id="size" name="size" min="100" max="400" value="200"
                         class="mt-1 block w-full">
@@ -67,9 +71,10 @@
 
             <div id="result" class="mt-8 hidden">
                 <div class="text-center">
-                    <div class="qr-container inline-block p-4 bg-white rounded-lg shadow">
-                        <canvas id="qrCanvas"></canvas>
+                    <div class="qr-container">
+                        <div id="qrcode"></div>
                     </div>
+                    <div id="error" class="error-message hidden"></div>
                     <div class="mt-4">
                         <button id="downloadBtn"
                             class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">
@@ -82,62 +87,75 @@
     </div>
 
     <script>
-        document.getElementById('size').addEventListener('input', function() {
-            document.getElementById('sizeValue').textContent = this.value + 'px';
-        });
+        // Check if QRCode library is loaded
+        if (typeof QRCode === 'undefined') {
+            document.getElementById('error').textContent = 'Error: QRCode library failed to load. Please refresh the page.';
+            document.getElementById('error').classList.remove('hidden');
+        }
 
-        document.getElementById('qrForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        document.addEventListener('DOMContentLoaded', function() {
+            const sizeInput = document.getElementById('size');
+            const sizeValue = document.getElementById('sizeValue');
+            const qrForm = document.getElementById('qrForm');
+            const qrcodeDiv = document.getElementById('qrcode');
+            const errorDiv = document.getElementById('error');
             
-            const url = document.getElementById('url').value;
-            const color = document.getElementById('color').value;
-            const bgColor = document.getElementById('bgColor').value;
-            const style = document.getElementById('style').value;
-            const size = document.getElementById('size').value;
-            
-            if (!url) {
-                alert('Please enter a URL or text');
-                return;
-            }
+            // Update size display
+            sizeInput.addEventListener('input', function() {
+                sizeValue.textContent = this.value + 'px';
+            });
 
-            const canvas = document.getElementById('qrCanvas');
-            const options = {
-                width: size,
-                height: size,
-                color: {
-                    dark: color,
-                    light: bgColor
-                },
-                margin: 1
-            };
-
-            QRCode.toCanvas(canvas, url, options, function(error) {
-                if (error) {
-                    console.error(error);
-                    alert('Error generating QR code');
+            // Generate QR code
+            qrForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const url = document.getElementById('url').value;
+                const color = document.getElementById('color').value;
+                const bgColor = document.getElementById('bgColor').value;
+                const size = parseInt(document.getElementById('size').value);
+                
+                if (!url) {
+                    errorDiv.textContent = 'Please enter a URL or text';
+                    errorDiv.classList.remove('hidden');
                     return;
                 }
 
-                // Apply rounded corners if selected
-                if (style === 'rounded') {
-                    const ctx = canvas.getContext('2d');
-                    ctx.globalCompositeOperation = 'destination-in';
-                    ctx.fillStyle = '#000';
-                    ctx.beginPath();
-                    ctx.roundRect(0, 0, size, size, 20);
-                    ctx.fill();
+                try {
+                    // Clear previous QR code and error
+                    qrcodeDiv.innerHTML = '';
+                    errorDiv.classList.add('hidden');
+                    
+                    // Generate new QR code
+                    new QRCode(qrcodeDiv, {
+                        text: url,
+                        width: size,
+                        height: size,
+                        colorDark: color,
+                        colorLight: bgColor,
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+
+                    // Show result
+                    document.getElementById('result').classList.remove('hidden');
+                } catch (error) {
+                    errorDiv.textContent = 'Error generating QR code: ' + error.message;
+                    errorDiv.classList.remove('hidden');
                 }
-
-                document.getElementById('result').classList.remove('hidden');
             });
-        });
 
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            const canvas = document.getElementById('qrCanvas');
-            const link = document.createElement('a');
-            link.download = 'qr-code.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
+            // Download QR code
+            document.getElementById('downloadBtn').addEventListener('click', function() {
+                const img = qrcodeDiv.querySelector('img');
+                if (img) {
+                    const link = document.createElement('a');
+                    link.download = 'qr-code.png';
+                    link.href = img.src;
+                    link.click();
+                } else {
+                    errorDiv.textContent = 'No QR code to download';
+                    errorDiv.classList.remove('hidden');
+                }
+            });
         });
     </script>
 </body>
