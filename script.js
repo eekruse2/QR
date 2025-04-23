@@ -10,6 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
     generateBtn.addEventListener('click', generateQRCode);
     downloadBtn.addEventListener('click', downloadQRCode);
     
+    // Add event listeners for Enter key
+    urlInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            generateQRCode();
+        }
+    });
+    
+    textInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            generateQRCode();
+        }
+    });
+    
     function generateQRCode() {
         const urlValue = urlInput.value.trim();
         const textValue = textInput.value.trim();
