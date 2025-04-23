@@ -8,7 +8,7 @@ Visit the website at: [https://eekruse2.github.io/QR/](https://eekruse2.github.i
 ## Features
 - Clean, futuristic UI design
 - Real-time QR code generation
-- Support for various input types
+- Support for URL and text input
 - Responsive design for all devices
 
 ## Technologies Used
