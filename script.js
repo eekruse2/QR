@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const qrInput = document.getElementById('qr-input');
+    const urlInput = document.getElementById('url-input');
+    const textInput = document.getElementById('text-input');
     const generateBtn = document.getElementById('generate-btn');
     const downloadBtn = document.getElementById('download-btn');
     const qrCodeContainer = document.getElementById('qr-code');
@@ -10,15 +11,19 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadBtn.addEventListener('click', downloadQRCode);
     
     function generateQRCode() {
-        const inputValue = qrInput.value.trim();
+        const urlValue = urlInput.value.trim();
+        const textValue = textInput.value.trim();
         
-        if (!inputValue) {
-            alert('Please enter some text or URL');
+        if (!urlValue && !textValue) {
+            alert('Please enter either a URL or text');
             return;
         }
         
         // Clear previous QR code
         qrCodeContainer.innerHTML = '';
+        
+        // Use URL if provided, otherwise use text
+        const inputValue = urlValue || textValue;
         
         // Generate new QR code
         QRCode.toCanvas(qrCodeContainer, inputValue, {

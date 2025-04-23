@@ -16,7 +16,14 @@
         
         <main>
             <div class="input-section">
-                <textarea id="qr-input" placeholder="Enter text or URL here..." class="futuristic-input"></textarea>
+                <div class="input-group">
+                    <label for="url-input">URL</label>
+                    <input type="url" id="url-input" placeholder="https://example.com" class="futuristic-input url-input">
+                </div>
+                <div class="input-group">
+                    <label for="text-input">Text</label>
+                    <textarea id="text-input" placeholder="Enter text here..." class="futuristic-input text-input"></textarea>
+                </div>
                 <div class="controls">
                     <button id="generate-btn" class="futuristic-button">Generate QR Code</button>
                     <button id="download-btn" class="futuristic-button" disabled>Download QR Code</button>

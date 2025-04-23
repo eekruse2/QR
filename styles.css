@@ -56,18 +56,36 @@ h1 {
     margin-bottom: 2rem;
 }
 
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
 .futuristic-input {
     width: 100%;
-    min-height: 100px;
-    padding: 1rem;
     background: rgba(30, 30, 30, 0.8);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     color: var(--text-color);
     font-size: 1rem;
-    resize: vertical;
-    margin-bottom: 1rem;
     transition: all 0.3s ease;
+}
+
+.url-input {
+    padding: 0.8rem 1rem;
+    height: auto;
+}
+
+.text-input {
+    min-height: 100px;
+    padding: 1rem;
+    resize: vertical;
 }
 
 .futuristic-input:focus {
