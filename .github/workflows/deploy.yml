@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, gh-pages ]
 
 permissions:
   contents: write
@@ -20,4 +20,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
           publish_branch: gh-pages
-          force_orphan: true 
+          force_orphan: true
+          commit_message: "Deploy: ${{ github.event.head_commit.message }}" 
