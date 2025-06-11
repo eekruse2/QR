@@ -4,8 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const generateBtn = document.getElementById('generate-btn');
     const downloadBtn = document.getElementById('download-btn');
     const qrCodeContainer = document.getElementById('qr-code');
-    
-    let currentQRCode = null;
+
+    // keep a reference to the generated canvas so we can download it later
+    let currentCanvas = null;
     
     generateBtn.addEventListener('click', generateQRCode);
     downloadBtn.addEventListener('click', downloadQRCode);
@@ -34,12 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Clear previous QR code
         qrCodeContainer.innerHTML = '';
-        
+
         // Use URL if provided, otherwise use text
         const inputValue = urlValue || textValue;
-        
-        // Generate new QR code
-        QRCode.toCanvas(qrCodeContainer, inputValue, {
+
+        // create a canvas element for the QR code
+        const canvas = document.createElement('canvas');
+
+        // Generate new QR code on the canvas
+        QRCode.toCanvas(canvas, inputValue, {
             width: 200,
             margin: 1,
             color: {
@@ -52,20 +56,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Error generating QR code');
                 return;
             }
-            
-            // Enable download button
+
+            // append the canvas to the container
+            qrCodeContainer.appendChild(canvas);
+
+            // Enable download button and store canvas reference
             downloadBtn.disabled = false;
-            currentQRCode = inputValue;
+            currentCanvas = canvas;
         });
     }
     
     function downloadQRCode() {
-        if (!currentQRCode) return;
-        
-        const canvas = qrCodeContainer.querySelector('canvas');
+        if (!currentCanvas) return;
+
         const link = document.createElement('a');
         link.download = 'qr-code.png';
-        link.href = canvas.toDataURL('image/png');
+        link.href = currentCanvas.toDataURL('image/png');
         link.click();
     }
-}); 
+});
