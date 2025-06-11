@@ -1,6 +1,6 @@
-# QR Code Generator
+# Free QR Code Generator
 
-A modern, futuristic QR code generator website that allows users to create QR codes from text, URLs, or other content.
+A QR code generator website that allows users to create QR codes from text, URLs, or other content.
 
 ## Live Demo
 Visit the website at: [https://eekruse2.github.io/QR/](https://eekruse2.github.io/QR/)
