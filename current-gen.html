@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Gen QR Codes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes rainbow-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        body {
+            font-family: 'Quicksand', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(-45deg, #FF78C4, #7B6CF6, #50E3C2, #FFD93D);
+            background-size: 400% 400%;
+            animation: rainbow-bg 15s ease infinite;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            height: auto;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.1),
+                0 0 20px rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: visible;
+            margin-bottom: 25vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .nav a.active {
+            background: rgba(123, 108, 246, 0.4);
+        }
+        h1 {
+            font-family: 'Pacifico', cursive;
+            color: #7B6CF6;
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 1em;
+            text-shadow: 3px 3px 0px rgba(123, 108, 246, 0.2);
+            animation: float 4s ease-in-out infinite;
+        }
+        .qr-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        .qr-item {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 400px;
+        }
+        .qr-item img {
+            width: auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .qr-item p {
+            color: #7B6CF6;
+            margin: 5px 0;
+            font-weight: 600;
+        }
+        .download-btn {
+            background: #7B6CF6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        .download-btn:hover {
+            background: #6557d3;
+            transform: translateY(-2px);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #7B6CF6;
+        }
+        .empty-state p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .empty-state a {
+            color: #FF78C4;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .empty-state a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="index.html">Generate QR</a>
+        <a href="current-gen.html" class="active">Current Gen</a>
+    </div>
+    <div class="container">
+        <h1>Current QR Codes</h1>
+        <div id="qrHistory" class="qr-grid">
+            <div class="empty-state">
+                <p>No QR codes generated yet.</p>
+                <p>Head to the <a href="index.html">Generator</a> to create some!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle QR code download
+        function downloadQRCode(dataUrl) {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `QR-Code-${new Date().toISOString().split('T')[0]}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Function to display only the most recent QR code from local storage
+        function displayQRHistory() {
+            const qrHistory = document.getElementById('qrHistory');
+            const storedCodes = JSON.parse(localStorage.getItem('qrCodes') || '[]');
+            
+            if (storedCodes.length === 0) {
+                return; // Keep the empty state message
+            }
+
+            // Clear the empty state
+            qrHistory.innerHTML = '';
+            
+            // Get only the most recent QR code (first item in the array)
+            const mostRecent = storedCodes[0];
+            
+            const qrItem = document.createElement('div');
+            qrItem.className = 'qr-item';
+            
+            qrItem.innerHTML = `
+                <img src="${mostRecent.dataUrl}" alt="Most Recent QR Code">
+                <p>${mostRecent.content}</p>
+                <p>${new Date(mostRecent.date).toLocaleDateString()}</p>
+                <button class="download-btn" onclick="downloadQRCode('${mostRecent.dataUrl}')">
+                    Download QR Code
+                </button>
+            `;
+            
+            qrHistory.appendChild(qrItem);
+        }
+
+        // Load QR code when the page loads
+        document.addEventListener('DOMContentLoaded', displayQRHistory);
+    </script>
+</body>
+</html>
