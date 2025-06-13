@@ -214,6 +214,36 @@
             position: relative;
             transition: all 0.3s ease;
         }
+        .qr-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        .action-btn {
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 8px;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: #f8f8f8;
+        }
+        .action-btn svg {
+            width: 24px;
+            height: 24px;
+        }
         #qrcode::before {
             content: "✨";
             position: absolute;
@@ -366,6 +396,8 @@
                     correctLevel: QRCode.CorrectLevel.L // Using L level for larger data capacity
                 });
 
+                // No need to add action buttons here since they'll be on current-gen page
+
                 // Store the QR code in localStorage
                 setTimeout(() => {
                     const qrImage = qrcodeContainer.querySelector('img');
@@ -392,6 +424,42 @@
                 console.error('Error generating QR code:', error);
                 alert(error.message || 'Error generating QR code');
             }
+        }
+
+        function printQRCode() {
+            const qrImage = document.querySelector('#qrcode img');
+            if (!qrImage) return;
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print QR Code</title>
+                    <style>
+                        body {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            height: 100vh;
+                            margin: 0;
+                        }
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <img src="${qrImage.src}" />
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
         }
 
         async function processFile(file) {

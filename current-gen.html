@@ -90,6 +90,7 @@
             transition: all 0.3s ease;
             width: 100%;
             max-width: 400px;
+            position: relative;
         }
         .qr-item img {
             width: auto;
@@ -106,9 +107,40 @@
             margin: 5px 0;
             font-weight: 600;
         }
+        .qr-actions {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        .action-btn {
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 8px;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: #f8f8f8;
+        }
+        .action-btn svg {
+            width: 24px;
+            height: 24px;
+        }
         .download-btn {
-            background: #7B6CF6;
-            color: white;
+            background: white;
+            color: #7B6CF6;
             border: none;
             padding: 10px 20px;
             border-radius: 10px;
@@ -117,10 +149,15 @@
             font-weight: 600;
             margin-top: 10px;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .download-btn:hover {
-            background: #6557d3;
             transform: translateY(-2px);
+            background: #f8f8f8;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .empty-state {
             text-align: center;
@@ -147,6 +184,18 @@
         <a href="current-gen.html" class="active">Current Gen</a>
     </div>
     <div class="container">
+        <div class="qr-actions">
+            <button class="action-btn print-btn" onclick="printQRCode(mostRecentCode)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="#7B6CF6" d="M19 8h-1V3H6v5H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zM8 5h8v3H8V5zm8 14H8v-4h8v4zm4-4h-2v-2H6v2H4v-4c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v4z"/>
+                </svg>
+            </button>
+            <button class="action-btn" onclick="downloadQRCode(mostRecentCode)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="#7B6CF6" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                </svg>
+            </button>
+        </div>
         <h1>Current QR Codes</h1>
         <div id="qrHistory" class="qr-grid">
             <div class="empty-state">
@@ -167,6 +216,8 @@
             document.body.removeChild(link);
         }
 
+        let mostRecentCode = '';
+
         // Function to display only the most recent QR code from local storage
         function displayQRHistory() {
             const qrHistory = document.getElementById('qrHistory');
@@ -181,6 +232,7 @@
             
             // Get only the most recent QR code (first item in the array)
             const mostRecent = storedCodes[0];
+            mostRecentCode = mostRecent.dataUrl;
             
             const qrItem = document.createElement('div');
             qrItem.className = 'qr-item';
@@ -189,12 +241,43 @@
                 <img src="${mostRecent.dataUrl}" alt="Most Recent QR Code">
                 <p>${mostRecent.content}</p>
                 <p>${new Date(mostRecent.date).toLocaleDateString()}</p>
-                <button class="download-btn" onclick="downloadQRCode('${mostRecent.dataUrl}')">
-                    Download QR Code
-                </button>
             `;
             
             qrHistory.appendChild(qrItem);
+        }
+
+        // Function to print QR code
+        function printQRCode(dataUrl) {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print QR Code</title>
+                    <style>
+                        body {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            height: 100vh;
+                            margin: 0;
+                        }
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <img src="${dataUrl}" />
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
         }
 
         // Load QR code when the page loads
